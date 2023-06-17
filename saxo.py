@@ -1,12 +1,10 @@
-
-import asyncio
-import youtube_dl
-
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 import random
+import asyncio
+import youtube_dl
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -41,8 +39,6 @@ async def on_ready():
     # activity = discord.Activity(type = discord.ActivityType.watching, name= "a movie")
     
     print("\n---------------------- Le bot est en ligne ----------------------")
-    # print("Nom d'utilisateur :", bot.user.name)
-    # print("ID :", bot.user.id)
     
     try:
         synced = await bot.tree.sync()
@@ -66,9 +62,7 @@ def identifier():
         id += str(random.randint(0, 10))
             
     return id
-    
-    
-
+ 
 # SE CONFESSER
 
 @bot.tree.command(name = "confess", description = "Soumettre une confession.")
@@ -77,94 +71,16 @@ def identifier():
 async def confess(interaction : discord.Interaction, confession : str):
     
     if interaction.channel_id == 1110596206800932864:
-        
-        
-        
+            
+        id = identifier()
+           
         embed_c = discord.Embed(title = f"Confession Anonyme (#{id})", description = confession, color = 0xb8cd40)
         
         await interaction.response.send_message("Votre confession sera envoyé de façon anonyme dans quelques instants.", ephemeral = True)
         await interaction.channel.send(embed = embed_c)
 
     else:
+      
         await interaction.response.send_message("Cette commande n'est pas autorisée dans ce salon.", ephemeral = True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-voice_clients = {}
-
-yt_dl_opts = {'format': 'bestaudio/best'}
-ytdl = youtube_dl.YoutubeDL(yt_dl_opts)
-
-ffmpeg_options = {'options': "-vn"}
-
-
-
-
-# This event happens when a message gets sent
-@bot.event
-async def on_message(msg):
-    if msg.content.startswith("?play"):
-
-        try:
-            voice_client = await msg.author.voice.channel.connect()
-            voice_clients[voice_client.guild.id] = voice_client
-        except:
-            print("error")
-
-        try:
-            url = msg.content.split()[1]
-
-            loop = asyncio.get_event_loop()
-            data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
-
-            song = data['url']
-            
-            player = discord.FFmpegPCMAudio(song, **ffmpeg_options, executable = "C:\\Users\\yamad\\Desktop\\ffmpeg\\ffmpeg.exe")
-
-            voice_clients[msg.guild.id].play(player)
-
-        except Exception as err:
-            print(err)
-
-
-    if msg.content.startswith("?pause"):
-        try:
-            voice_clients[msg.guild.id].pause()
-        except Exception as err:
-            print(err)
-
-    # This resumes the current song playing if it's been paused
-    if msg.content.startswith("?resume"):
-        try:
-            voice_clients[msg.guild.id].resume()
-        except Exception as err:
-            print(err)
-
-    # This stops the current playing song
-    if msg.content.startswith("?stop"):
-        try:
-            voice_clients[msg.guild.id].stop()
-            await voice_clients[msg.guild.id].disconnect()
-        except Exception as err:
-            print(err)
-
-
-
-bot.run("MTExNjQ0NDM0NjExNjQ3Njk0OA.GoGyuZ.T02QCCWzHvAOme8E1dVzMWVENjS1O021VNWvIU")
-
+bot.run("token")
