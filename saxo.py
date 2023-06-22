@@ -54,33 +54,46 @@ async def test(interaction : discord.Interaction):
     
     await interaction.response.send_message(f"Salut ! Tu viens d'utiliser une slash commande.", ephemeral = True)
 
+# IDENTIFIANTS DES SALONS    
+
+ID = {
+    "Confessions" : _,
+    "Confessions Logs" : _
+}
+
+# SE CONFESSER
+
 def identifier():
     
     id = ''
-    
     for i in range(8):
         id += str(random.randint(0, 10))
-            
+
     return id
- 
-# SE CONFESSER
 
 @bot.tree.command(name = "confess", description = "Soumettre une confession.")
 @app_commands.describe(confession = "Texte de la confession.")
 
 async def confess(interaction : discord.Interaction, confession : str):
     
-    if interaction.channel_id == 1110596206800932864:
-            
-        id = identifier()
-           
-        embed_c = discord.Embed(title = f"Confession Anonyme (#{id})", description = confession, color = 0xb8cd40)
+    id = identifier()
+    
+    if interaction.channel_id == ID["Confessions"]:
+        
+        embed_c = discord.Embed(title = "Confession Anonyme", description = confession, color = 0xffc425)
         
         await interaction.response.send_message("Votre confession sera envoyé de façon anonyme dans quelques instants.", ephemeral = True)
         await interaction.channel.send(embed = embed_c)
-
+        
+        embed_l = discord.Embed(title = "Confession Anonyme", description = confession, color = 0xb8cd40)
+        embed_l.add_field(name = "ID", value = f"#{id}", inline = False)
+        embed_l.add_field(name = "Utilisateur", value = f"||{interaction.user.name}||", inline = False)
+        
+        target_channel = bot.get_channel(ID["Confessions Logs"])
+        
+        await target_channel.send(embed = embed_l)
+        
     else:
-      
         await interaction.response.send_message("Cette commande n'est pas autorisée dans ce salon.", ephemeral = True)
 
 bot.run("token")
